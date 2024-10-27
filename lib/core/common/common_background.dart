@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:litlab_learning/core/contants/assets_image_constant.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 
 class CommonBackground extends StatelessWidget {
   const CommonBackground({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class CommonBackground extends StatelessWidget {
                 top: scrHeight*0.08,
                 child: CircleAvatar(
                   radius: scrWidth*0.5,
-                  backgroundColor: ColorPalette.white,
+                  backgroundColor: ColorPalette.lateWhite,
                 ),
               ),
 
@@ -32,12 +32,12 @@ class CommonBackground extends StatelessWidget {
                 top: scrHeight*0.1,
                 child: CircleAvatar(
                   radius: scrWidth*0.5,
-                  backgroundColor: ColorPalette.white,
+                  backgroundColor: ColorPalette.lateWhite,
                 ),
               ),
+
             ],
           )
-
         ],
       ),
     );

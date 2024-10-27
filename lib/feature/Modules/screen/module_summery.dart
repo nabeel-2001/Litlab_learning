@@ -3,9 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
-
-
-
+import 'package:litlab_learning/feature/download/download_loading_screen.dart';
 class ModuleSummery extends StatefulWidget {
   const ModuleSummery({super.key});
 
@@ -65,27 +63,7 @@ class _ModuleSummeryState extends State<ModuleSummery> {
                 )
               ],
             ),
-            SizedBox(
-              height: scrHeight*0.07,
-              width: scrWidth*0.8,
-              child: TextFormField(
-                controller: searchController,
-                keyboardType: TextInputType.name,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-
-                  prefixIcon:SvgPicture.asset("assets/images/search.svg",width: scrWidth*0.03,height: scrHeight*0.03,fit: BoxFit.none,),
-                  hintText: "Search notes, materials & more",
-                  enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color:ColorPalette.black),
-                      borderRadius: BorderRadius.circular(scrWidth * 0.03)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(scrWidth * 0.03),
-                    borderSide: BorderSide(color:ColorPalette.black),
-                  ),
-                ),
-              ),
-            ),
+            
             Container(
               height: scrHeight * 0.125,
               width: scrWidth * 0.9,
@@ -126,7 +104,7 @@ class _ModuleSummeryState extends State<ModuleSummery> {
             ),
             Container(
               height: scrHeight * 0.3,
-              width: scrWidth * 0.9,
+              width: scrWidth * 0.85,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(scrWidth * 0.03),
                   border: Border.all(color: Colors.black)),
@@ -155,7 +133,7 @@ class _ModuleSummeryState extends State<ModuleSummery> {
                       ),
                     ),
                     SizedBox(
-                      height: scrHeight * 0.16,
+                      height: scrHeight * 0.15,
                       width: scrWidth * 0.65,
                       child: Text(
                         "Love across time is a romantic narrative where themes of love, destiny, and the passage of time intertwine with the backdrop of Calicut University. In this chapter, the protagonists, who might have shared an intense love in the past, are brought together by fate in a modern-day university setting."
@@ -164,44 +142,51 @@ class _ModuleSummeryState extends State<ModuleSummery> {
                       ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text("Download the full version",
-                        style: GoogleFonts.cabin(
-                          color: ColorPalette.lateBlack,
-                          fontSize: scrWidth*0.03
-                        ),),
-                        SizedBox(width: scrWidth*0.02,),
-                        Container(
-                          height: scrHeight*0.02,
-                          width: scrWidth*0.04,
-                          decoration: BoxDecoration(
-                              color: Colors.yellow,
-                              borderRadius: BorderRadius.circular(scrWidth*0.009)
-                          ),
-                          child: Center(
-                            child:SvgPicture.asset("assets/images/download.svg",width: scrWidth*0.025,),
-                          ),
-                        )
-                      ],
-                    )
+                    Container(
+                      height: scrHeight*0.025,
+                      width: scrWidth*0.31,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: ColorPalette.black),
+                          borderRadius: BorderRadius.circular(scrWidth*0.015)
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Read the full version",
+                          style: GoogleFonts.cabin(
+                            fontWeight: FontWeight.w600,
+                            color: ColorPalette.lateBlack,
+                            fontSize: scrWidth*0.025
+                          ),),
+                          SizedBox(width: scrWidth*0.01,),
+                          SvgPicture.asset("assets/images/ice.svg",width: scrWidth*0.035,)
+                        ],
+                      ),
+                    ),
+
                   ],
                 ),
               ),
             ),
-            Container(
-              height: scrHeight * 0.075,
-              width: scrWidth * 0.9,
-              decoration: BoxDecoration(
-                  color: ColorPalette.yellow,
-                  borderRadius: BorderRadius.circular(scrWidth * 0.06)),
-              child: Center(
-                child: Text(
-                  "Go to Downloads",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: scrWidth * 0.07,
-                      fontWeight: FontWeight.bold),
+            InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DownloadLoadingScreen(),));
+              },
+              child: Container(
+                height: scrHeight * 0.075,
+                width: scrWidth * 0.9,
+                decoration: BoxDecoration(
+                    color: ColorPalette.yellow,
+                    borderRadius: BorderRadius.circular(scrWidth * 0.06)),
+                child: Center(
+                  child: Text(
+                    "Go to Downloads",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: scrWidth * 0.07,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),

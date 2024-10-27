@@ -13,8 +13,12 @@ class ColorPalette{
   static Color orange=const Color(0x33F69008);
   static Color darkOrange=const Color(0x33F8A435);
   static Color lateBlack= const Color(0xff474646);
-  static Color white= const Color(0x4DFFFFFF);
+  static Color white= const Color(0xffFFFFFF);
+  static Color lateWhite= const Color(0x4DFFFFFF);
   static Color authButtonColor= const Color(0xff92C6D4);
+  static Color bottomButtonColor= const Color(0xff92C6D4);
+  static Color modelQuestionColor= const Color(0xff07415B);
+
 
 
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/onboarding_screen1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(seconds: 5)).then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnboardingScreen1(),), (route) => false,),);
+
+
+
+    Future.delayed(const Duration(seconds: 5)).then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const OnboardingScreen1(),), (route) => false,),);
   }
   @override
   Widget build(BuildContext context) {
