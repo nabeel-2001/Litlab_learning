@@ -1,15 +1,31 @@
-class MaterialModel{
+import 'package:hive/hive.dart';
+
+class MaterialModel extends HiveObject {
+  @HiveField(0)
   final String department;
+
+  @HiveField(1)
   final String course;
+
+  @HiveField(2)
   final String id;
+
+  @HiveField(3)
   final String title;
+
+  @HiveField(4)
   final String description;
+
+  @HiveField(5)
   final String semester;
+
+  @HiveField(6)
   final DateTime createTime;
+
+  @HiveField(7)
   final String fileUrl;
 
-//<editor-fold desc="Data Methods">
-  const MaterialModel({
+   MaterialModel({
     required this.department,
     required this.course,
     required this.id,

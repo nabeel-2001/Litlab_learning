@@ -107,13 +107,14 @@ class AuthRepository {
       {required String email, required String password}) async {
     UserModel? userModel;
     try {
-      final checkStudent = await FirebaseFirestore.instance
-          .collection(FirebaseConstants.user)
-          .where("email",isEqualTo: email).where("password",isEqualTo: password)
-          .get();
+      var userStream = _users
+          .where('email', isEqualTo: email)
+          .where('password', isEqualTo: password)
+          .snapshots();
+      QuerySnapshot checkStudent = await userStream.first;
       print(checkStudent.docs);
       if (checkStudent.docs.isNotEmpty) {
-        userModel = UserModel.fromMap(checkStudent.docs.first.data());
+        userModel = UserModel.fromMap(checkStudent.docs.first.data() as Map<String,dynamic> );
 
         print("ggggggiiiiiiiiiiiiiiiiiiiii");
         print("${userModel.phone}  kkkkkkkkkkkkkk");
@@ -127,4 +128,9 @@ class AuthRepository {
       return left(Failure(message: e.toString()));
     }
   }
+ Stream<UserModel> getUserDetail({required String userId}){
+return _users.doc(userId).snapshots()
+    .map((event) => UserModel.fromMap(event.data() as Map<String,dynamic>),);
+  }
 }
+

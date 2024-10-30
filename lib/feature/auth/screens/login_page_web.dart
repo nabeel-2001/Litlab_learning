@@ -156,6 +156,7 @@ await ref.read(authControllerProvider).loginUser(context: context, email: email,
                         ElevatedButton.icon(
                           onPressed: () async {
                             await ref.read(authControllerProvider).signInWithGoogle(context);
+
                             // Google sign-in action
                             // await ref.read(authControllerProvider).signInWithGoogle(ref);
                             // print(name);
@@ -186,7 +187,7 @@ await ref.read(authControllerProvider).loginUser(context: context, email: email,
                             Text("You have an account? "),
                             GestureDetector(
                               onTap: () {
-                                context.go('/register_page');
+                               Navigator.pushNamedAndRemoveUntil(context, "registration", (route) => false,);
                               },
                               child: Text(
                                 "Register",

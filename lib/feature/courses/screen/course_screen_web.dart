@@ -57,10 +57,7 @@ class _CourseScreenWebState extends ConsumerState<CourseScreenWeb> {
     });
   }
 
-  getMaterial() async {
-   await ref.read(materialControllerProvider.notifier).getMaterial(ref.read(selectCourse).toString());
-   print(ref.watch(materialControllerProvider));
-  }
+
   @override
   Widget build(BuildContext context) {
     final courses = ref.watch(courseControllerProvider);
@@ -152,7 +149,7 @@ class _CourseScreenWebState extends ConsumerState<CourseScreenWeb> {
                       }
                       else {
                         context.go("/common_screen");
-                        getMaterial();
+
                       }
 
                     },

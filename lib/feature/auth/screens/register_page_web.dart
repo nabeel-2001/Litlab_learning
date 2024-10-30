@@ -27,6 +27,7 @@ String? imageUrl;
   TextEditingController email=TextEditingController();
   TextEditingController college=TextEditingController();
   TextEditingController password=TextEditingController();
+  TextEditingController confirmPassword=TextEditingController();
   final _formKey = GlobalKey<FormState>();
 setSearchParameters(String name) {
   List<String> caseSearchList = [];
@@ -55,14 +56,65 @@ addUsers() async {
     collegeName: college.text,
     search: setSearchParameters(name.text)
   );
-  await ref.read(authControllerProvider).addUser(users!);
+  await ref.read(authControllerProvider).addUser(context: context,userModel: users!);
   name.clear();
   email.clear();
   college.clear();
   phone.clear();
+  confirmPassword.clear();
 }
 
+String? _validateName(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please enter your name';
+  } else if (value.trim().length < 3) {
+    return 'Name must be at least 3 characters long';
+  }
+  return null;
+}
 
+String? _validatePhone(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please enter your phone number';
+  } else if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+    return 'Enter a valid 10-digit phone number';
+  }
+  return null;
+}
+
+String? _validateEmail(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please enter your email';
+  } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+    return 'Enter a valid email address';
+  }
+  return null;
+}
+
+String? _validatePassword(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please enter your password';
+  } else if (value.trim().length < 6) {
+    return 'Password must be at least 6 characters long';
+  }
+  return null;
+}
+
+String? _validateConfirmPassword(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please confirm your password';
+  } else if (value != password.text) {
+    return 'Passwords do not match';
+  }
+  return null;
+}
+
+String? _validateCollege(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Please select your college';
+  }
+  return null;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +165,7 @@ addUsers() async {
                 child: Form(
 key: _formKey,
                   child: SizedBox(
-                    height: scrHeight*0.8,
+                    height: scrHeight*0.85,
                     width: scrWidth*0.25,
                     child: Column(
                       children: [
@@ -122,15 +174,7 @@ key: _formKey,
                           autovalidateMode: AutovalidateMode
                               .onUserInteraction,
                           controller: name,
-                      validator: (value) {
-                        if (value == null ||
-                            value.trim().isEmpty ||
-                            value.trim().length < 3) {
-                          return "Must contain atleast 3 characters ";
-                        } else {
-                          return null;
-                        }
-                      },
+                      validator: (value) => _validateName(value),
                           decoration: InputDecoration(
 
                             labelText: 'Name',
@@ -140,8 +184,11 @@ key: _formKey,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
+                          validator: (value) => _validatePhone(value),
                           controller: phone,
                           decoration: InputDecoration(
                             labelText: 'Phone',
@@ -151,8 +198,11 @@ key: _formKey,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
+                          validator: (value) => _validateEmail(value),
                           controller: email,
                           decoration: InputDecoration(
                             labelText: 'Email',
@@ -162,9 +212,12 @@ key: _formKey,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
                           controller: password,
+                          validator: (value) => _validatePassword(value),
                           decoration: InputDecoration(
                             labelText: 'password',
                             hintText: 'enter password',
@@ -173,8 +226,25 @@ key: _formKey,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 14),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
+                          controller: confirmPassword,
+                          validator: (value) => _validateConfirmPassword(value),
+                          decoration: InputDecoration(
+                            labelText: 'Conform password',
+                            hintText: 'enter Conform password',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
+                          validator: (value) => _validateCollege(value),
                           controller: college,
                           decoration: InputDecoration(
                             labelText: 'College',
@@ -184,7 +254,7 @@ key: _formKey,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 28),
 
                         // Register button
                         GestureDetector(
@@ -256,7 +326,7 @@ key: _formKey,
                             Text("You have an account? "),
                             GestureDetector(
                               onTap: () {
-                                context.go('/login_page');
+                                Navigator.pushNamed(context,'login_page');
                               },
                               child: Text(
                                 "Login",

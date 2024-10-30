@@ -1,19 +1,36 @@
-class UserModel{
+import 'package:hive/hive.dart';
+
+part 'users_model.g.dart';
+
+@HiveType(typeId: 0)
+class UserModel {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final String id;
+  @HiveField(2)
   final String email;
+  @HiveField(3)
   final String collegeName;
+  @HiveField(4)
   final String department;
+  @HiveField(5)
   final String course;
+  @HiveField(6)
   final String commonCourse;
+  @HiveField(7)
   final String phone;
+  @HiveField(8)
   final String image;
+  @HiveField(9)
   final List search;
+  @HiveField(10)
   final List favourite;
+  @HiveField(11)
   final bool delete;
+  @HiveField(12)
   final String password;
 
-//<editor-fold desc="Data Methods">
   const UserModel({
     required this.name,
     required this.id,
@@ -29,25 +46,24 @@ class UserModel{
     required this.delete,
     required this.password,
   });
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UserModel &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          id == other.id &&
-          email == other.email &&
-          collegeName == other.collegeName &&
-          department == other.department &&
-          course == other.course &&
-          commonCourse == other.commonCourse &&
-          phone == other.phone &&
-          image == other.image &&
-          search == other.search &&
-          favourite == other.favourite &&
-          delete == other.delete &&
-          password == other.password);
+          (other is UserModel &&
+              runtimeType == other.runtimeType &&
+              name == other.name &&
+              id == other.id &&
+              email == other.email &&
+              collegeName == other.collegeName &&
+              department == other.department &&
+              course == other.course &&
+              commonCourse == other.commonCourse &&
+              phone == other.phone &&
+              image == other.image &&
+              search == other.search &&
+              favourite == other.favourite &&
+              delete == other.delete &&
+              password == other.password);
 
   @override
   int get hashCode =>
@@ -152,5 +168,4 @@ class UserModel{
     );
   }
 
-//</editor-fold>
 }

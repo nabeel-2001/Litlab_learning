@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/src/either.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:litlab_learning/core/common/widgets/common_snack_bar.dart';
 import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/type_def.dart';
@@ -10,6 +12,8 @@ import 'package:litlab_learning/feature/auth/screens/login_page_web.dart';
 import 'package:litlab_learning/main.dart';
 import 'package:litlab_learning/model/users_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final currentUser=StreamProvider.family((ref,String userId) => ref.watch(authControllerProvider).streamCurrentUser(userId: userId),);
 final authControllerProvider=Provider((ref) =>AuthController(authRepository: ref.read(authRepositoryProvider,), ref: ref) ,);
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
@@ -49,7 +53,6 @@ class AuthController extends StateNotifier<bool> {
           currentUserId = studentModel.id;
           print("hiiiiiiiiiiiiiiiiiiiiii");
           _ref.read(userProvider.notifier).update((state) => studentModel);
-
           final preferences = await SharedPreferences.getInstance();
           await preferences.setString("userId", studentModel.id);
           await preferences.setString("userEmail", studentModel.email);
@@ -63,8 +66,61 @@ class AuthController extends StateNotifier<bool> {
     );
   }
 
-  addUser(UserModel userModel) {
-    _authRepository.addUsers(userModel: userModel);
+  addUser(
+      {required BuildContext context,
+        required UserModel userModel}) async {
+
+    state = true; // Show loading state
+
+    // Try to add the user and handle the result
+    final result = await _authRepository.addUsers(userModel: userModel);
+
+    state = false; // Hide loading state
+
+    // Handle success or failure using fold
+    result.fold(
+          (failure) {
+        // If there's an error, show a snack bar with the error message
+        showSnackBar(
+          message: failure.message,
+          context: context,
+          icon: null,
+          color: Colors.red,
+        );
+      },
+          (user) async {
+        // If the user was successfully added
+        if (user != null) {
+          // Show success message
+          showSnackBar(
+            message: "User registered successfully!",
+            context: context,
+            icon: null,
+            color: Colors.green,
+          );
+
+          // Optionally, update the user state in the app
+          _ref.read(userProvider.notifier).update((state) => userModel);
+
+          // Optionally, store user data in local storage (Hive/SharedPreferences)
+
+
+          var box = await Hive.openBox('userBox');
+          box.put('currentUser', userModel);
+
+          // Navigate to the main screen after successful registration
+          Navigator.pushNamedAndRemoveUntil(context, 'onBody_screen', (route) => false);
+        } else {
+          // Show error message if the user was not added
+          showSnackBar(
+            message: "User registration failed!",
+            context: context,
+            icon: null,
+            color: Colors.red,
+          );
+        }
+      },
+    );
   }
 
   loginUser(
@@ -107,8 +163,13 @@ class AuthController extends StateNotifier<bool> {
             await preferences.setString("userName", studentModel.name);
             await preferences.setString("userProfile", studentModel.image);
             // Navigate to the main body screen
-         studentModel.department==''?context.go('/on_body') :context.go('/sideBar_Page');
+            var box = await Hive.openBox('userBox');
+            box.put('currentUser', studentModel);
+         studentModel.department==''?Navigator.pushNamedAndRemoveUntil(context, '/on_body', (route) => false) :Navigator.pushNamedAndRemoveUntil(context, 'sideBar_Page', (route) => false);
           }
         });
+  }
+  Stream<UserModel> streamCurrentUser({required String userId}){
+    return _authRepository.getUserDetail(userId: userId);
   }
 }

@@ -1,49 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:hive/hive.dart';
+import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/Modules/screen/module_summery_web.dart';
 import 'package:litlab_learning/feature/Profile/screen/profile_setting_web.dart';
+import 'package:litlab_learning/feature/auth/controller/auth_controller.dart';
 import 'package:litlab_learning/feature/home/screen/home_screen_web.dart';
+import 'package:litlab_learning/feature/materials/screen/material_page_web.dart';
 
 
 import 'package:litlab_learning/feature/save_notes/screen/save_note_web.dart';
+import 'package:litlab_learning/feature/save_notes/screen/save_note_web_main.dart';
+import 'package:litlab_learning/model/users_model.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-class SideBarPage extends StatefulWidget {
+class SideBarPage extends ConsumerStatefulWidget {
   const SideBarPage({super.key});
 
   @override
-  State<SideBarPage> createState() => _SideBarPageState();
+  ConsumerState<SideBarPage> createState() => _SideBarPageState();
 }
 
-class _SideBarPageState extends State<SideBarPage> {
-  final _controller = SidebarXController(selectedIndex: 0, extended: true);
-  final _key = GlobalKey<ScaffoldState>();
-
+class _SideBarPageState extends ConsumerState<SideBarPage> {
+  getUserFromHive() async {
+    var box = await Hive.openBox('userBox');
+    UserModel? userModel=await  box.get('currentUser') as UserModel?;
+    ref.read(userProvider.notifier).update((state) => userModel,);
+    print(userModel!.id);
+  }
+  @override
+  void didChangeDependencies() {
+    getUserFromHive();
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
+    final selectedPageIndex = ref.watch(selectedPageIndexProvider); // Watch the selected page index
+
     return Scaffold(
-      key: _key,
+      key: GlobalKey<ScaffoldState>(),
       appBar: isSmallScreen
           ? AppBar(
         backgroundColor: Colors.white,
-        title: Text(_getTitleByIndex(_controller.selectedIndex)),
+        title: Text(_getTitleByIndex(selectedPageIndex)),
         leading: IconButton(
           onPressed: () {
-            _key.currentState?.openDrawer();
+            Scaffold.of(context).openDrawer();
           },
           icon: const Icon(Icons.menu),
         ),
       )
           : null,
-      drawer: ExampleSidebarX(controller: _controller),
+      drawer: ExampleSidebarX(),
       body: Row(
         children: [
-          if (!isSmallScreen) ExampleSidebarX(controller: _controller),
+          if (!isSmallScreen) ExampleSidebarX(),
           Expanded(
             child: Center(
-              child: _ScreensExample(controller: _controller,),
+              child: _getPageByIndex(selectedPageIndex),  // Dynamically get the page
             ),
           ),
         ],
@@ -52,28 +71,59 @@ class _SideBarPageState extends State<SideBarPage> {
   }
 }
 
-class ExampleSidebarX extends StatelessWidget {
-  const ExampleSidebarX({
-    Key? key,
-    required SidebarXController controller,
-  })  : _controller = controller,
-        super(key: key);
 
-  final SidebarXController _controller;
+
+
+  Widget _getPageByIndex(int index) {
+    switch (index) {
+      case 0:
+        return const HomeScreenWeb();
+      case 1:
+        return const FavouritePageWebMainScreen();
+      case 2:
+        return const ProfileSettingsWeb();
+      case 3:
+        return const MaterialPageWeb();
+      case 4:
+        return  const ModuleSummaryWeb();
+      default:
+        return const Center(child: Text("Page not found"));
+    }
+  }
+
+  String _getTitleByIndex(int index) {
+    switch (index) {
+      case 0:
+        return 'Home';
+      case 1:
+        return 'Favourites';
+      case 2:
+        return 'Profile';
+
+      default:
+        return 'Not found page';
+    }
+  }
+
+
+
+class ExampleSidebarX extends ConsumerWidget {
+  const ExampleSidebarX({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = SidebarXController(selectedIndex: 0, extended: true);
+
     return SidebarX(
-      controller: _controller,
+      controller: controller,
       theme: SidebarXTheme(
-        width: 200, // Adjusting width to make it more compact.
+        width: 200,
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-            // margin: const EdgeInsets.only( left: 10, bottom: 10), // Similar padding as per the image.
         itemTextPadding: const EdgeInsets.only(left: 20),
         selectedItemTextPadding: const EdgeInsets.only(left: 20),
-        hoverColor: Colors.blue[100], // Slight hover effect.
+        hoverColor: Colors.blue[100],
         textStyle: const TextStyle(color: Colors.black87),
         selectedTextStyle: const TextStyle(
           color: Colors.black,
@@ -93,85 +143,41 @@ class ExampleSidebarX extends StatelessWidget {
           height: 100,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Image.asset('assets/images/Logo P 1.png'), // Adjust the logo path.
+            child: Image.asset('assets/images/Logo P 1.png'),
           ),
         );
       },
       items: [
         SidebarXItem(
           iconBuilder: (selected, hovered) {
-            return SvgPicture.asset("assets/images/homeicon.svg",
-              width: scrWidth*0.015,);
+            return SvgPicture.asset("assets/images/homeicon.svg", width: 24);
           },
           label: 'Home',
           onTap: () {
-            debugPrint('Home');
+            ref.read(selectedPageIndexProvider.notifier).state = 0;  // Update the selected page index
           },
         ),
-         SidebarXItem(
-           iconBuilder: (selected, hovered) {
-             return SvgPicture.asset("assets/images/favorite.svg",
-               width: scrWidth*0.015,);
-           },
-
-          label: 'Favourites',
-        ),
-         SidebarXItem(
+        SidebarXItem(
           iconBuilder: (selected, hovered) {
-            return SvgPicture.asset("assets/images/profile_bottom.svg",
-            width: scrWidth*0.02,);
+            return SvgPicture.asset("assets/images/favorite.svg", width: 24);
+          },
+          label: 'Favourites',
+          onTap: () {
+            ref.read(selectedPageIndexProvider.notifier).state = 1;  // Update the selected page index
+          },
+        ),
+        SidebarXItem(
+          iconBuilder: (selected, hovered) {
+            return SvgPicture.asset("assets/images/profile_bottom.svg", width: 24);
           },
           label: 'Profile',
+          onTap: () {
+            ref.read(selectedPageIndexProvider.notifier).state = 2;  // Update the selected page index
+          },
         ),
+
       ],
     );
   }
 }
 
-class _ScreensExample extends StatelessWidget {
-
-  const _ScreensExample({
-    Key? key,
-    required this.controller,
-  }) : super(key: key);
-  final SidebarXController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, child) {
-        final pageTitle = _getTitleByIndex(controller.selectedIndex);
-        switch (controller.selectedIndex) {
-          case 0:
-            return  const HomeScreenWeb();
-          case 1:
-            return FavoritesPage();
-          case 2:
-            return ProfileSettingsWeb();
-          default:
-            return Center(
-              child: Text(
-                pageTitle,
-                style: theme.textTheme.headlineSmall,
-              ),
-            );
-        }
-      },
-    );
-  }
-}
-
-String _getTitleByIndex(int index) {
-  switch (index) {
-    case 0:
-      return 'Home';
-    case 1:
-      return 'Downloads';
-    case 2:
-      return 'Saved';
-    default:
-      return 'Not found page';
-  }
-}

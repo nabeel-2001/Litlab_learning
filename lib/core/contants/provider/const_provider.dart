@@ -12,3 +12,7 @@ final coreSubMaterial=StateProvider<MaterialModel?>((ref) => null,);
 final userProvider = StateProvider<UserModel?>((ref) {
   return null;
 });
+final selectedPageIndexProvider = StateProvider<int>((ref) {
+  return 0;  // Default to the first page (Home)
+});
+final selectMaterial=StateProvider<MaterialModel?>((ref) => null,);

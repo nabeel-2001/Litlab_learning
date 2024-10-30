@@ -2,23 +2,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:litlab_learning/feature/materials/repository/material_repository.dart';
 import 'package:litlab_learning/model/materialModel.dart';
-final materialControllerProvider =
-StateNotifierProvider<MaterialController, List<MaterialModel>>((ref) {
-  return MaterialController(materialRepository: ref.read(materialRepositoryProvider));
-});
-class MaterialController extends StateNotifier<List<MaterialModel>> {
+import 'package:litlab_learning/model/users_model.dart';
+final materialProvider=StreamProvider.family((ref,String courseId) => ref.watch(materialControllerProvider).getMaterial(courseId),);
+final materialControllerProvider =Provider((ref) => MaterialController(materialRepository: ref.read(materialRepositoryProvider)),);
+
+class MaterialController {
   final MaterialRepository _materialRepository;
   MaterialController({required MaterialRepository materialRepository})
-      : _materialRepository = materialRepository,
-        super([]); // Initialize state as an empty list
+      : _materialRepository = materialRepository
+       ; // Initialize state as an empty list
   // Fetch the materials and update the state
-  Future<void> getMaterial(String courseId) async {
-    try {
+  Stream<List<MaterialModel>> getMaterial(String courseId)  {
+
       // Fetch materials from the repository
-      List<MaterialModel> fetchedMaterials = await _materialRepository.getMaterial(courseId);
-      state = fetchedMaterials; // Update the state with the fetched materials
-    } catch (e) {
-      state = []; // Handle errors
-    }
+      return _materialRepository.getMaterial(courseId) ;// Update the state with the fetched materials
+
+  }
+  addFavorite(String materialId,UserModel userModel){
+    _materialRepository.addFavourite(materialId, userModel);
+  }
+  remove(String materialId,UserModel userModel){
+    _materialRepository.remove(materialId, userModel);
   }
 }

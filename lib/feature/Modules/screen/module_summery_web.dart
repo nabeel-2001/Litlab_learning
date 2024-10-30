@@ -1,14 +1,30 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:litlab_learning/core/common/widgets/common_background_web.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
+import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/download/download_loading_screen.dart';
+import 'package:litlab_learning/model/materialModel.dart';
 
-class ModuleSummaryWeb extends StatelessWidget {
+class ModuleSummaryWeb extends ConsumerStatefulWidget {
+
+
+  const ModuleSummaryWeb({super.key});
+  @override
+  ConsumerState<ModuleSummaryWeb> createState() => _ModuleSummaryWebState();
+}
+
+class _ModuleSummaryWebState extends ConsumerState<ModuleSummaryWeb> {
+
+
   @override
   Widget build(BuildContext context) {
+    final material=ref.watch(selectMaterial);
+    final user=ref.watch(userProvider);
 
 
     return Scaffold(
@@ -18,7 +34,7 @@ class ModuleSummaryWeb extends StatelessWidget {
           CommonBackgroundWeb(i: 2,),
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: scrWidth * 0.03,
+
                 vertical: scrHeight * 0.05),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -26,15 +42,30 @@ class ModuleSummaryWeb extends StatelessWidget {
                 // Header (stacking column on mobile, row on tablet/desktop)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                   children: [
-const SizedBox(),
+  const SizedBox(),
                     Column(
                       children: [
-                        CircleAvatar(
-                            radius: scrWidth*0.02,
-                            backgroundImage: const AssetImage("assets/images/profile_image.png"),),
+                        CachedNetworkImage(
+                          imageUrl: user!.image.toString(),
+                          imageBuilder: (context, imageProvider) => Container(
+                            width: scrWidth*0.3,
+                            height: scrHeight*0.1,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+
+                                  image: imageProvider,
+                                  fit: BoxFit.contain,
+                                  ),
+                            ),
+                          ),
+                          placeholder: (context, url) => CircularProgressIndicator(),
+                          errorWidget: (context, url, error) => Icon(Icons.error),
+                        ),
                         Text(
-                          "Alex John",
+                          user?.name.toString()??"unname",
                           style: TextStyle(
                               color: ColorPalette.black, fontSize: scrWidth * 0.01),
                         )
@@ -60,14 +91,14 @@ const SizedBox(),
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Topic: Love Across Time",
+                              material!.title,
                               style: GoogleFonts.montserrat(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w700,
                                   fontSize: scrWidth * 0.015),
                             ),
                             Text(
-                              "Time-Travel Romance",
+                              material.course,
                               style: GoogleFonts.inter(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500,
@@ -112,31 +143,36 @@ const SizedBox(),
                           height: scrHeight * 0.2,
                           width: scrWidth * 0.2,
                           child: Text(
-                            "Love across time is a romantic narrative where themes of love, destiny, and the passage of time intertwine with the backdrop of Calicut University. In this chapter, the protagonists, who might have shared an intense love in the past, are brought together by fate in a modern-day university setting."
+                            material.description
                             ,style: GoogleFonts.roboto(
                               fontSize: scrWidth * 0.011
                           ),
                           ),
                         ),
-                        Container(
-                          height: scrHeight * 0.04,
-                          width: scrWidth * 0.12,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(scrWidth * 0.003)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Read the full version",
-                                style: GoogleFonts.cabin(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: scrWidth * 0.01),
-                              ),
-                              SizedBox(width: scrWidth * 0.01),
-                              SvgPicture.asset("assets/images/ice.svg",
-                                  width: scrWidth * 0.013),
-                            ],
+                        InkWell(
+                          onTap: () {
+
+                          },
+                          child: Container(
+                            height: scrHeight * 0.04,
+                            width: scrWidth * 0.12,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(scrWidth * 0.003)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Read the full version",
+                                  style: GoogleFonts.cabin(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: scrWidth * 0.01),
+                                ),
+                                SizedBox(width: scrWidth * 0.01),
+                                SvgPicture.asset("assets/images/ice.svg",
+                                    width: scrWidth * 0.013),
+                              ],
+                            ),
                           ),
                         ),
                       ],

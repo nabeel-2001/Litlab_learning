@@ -6,6 +6,7 @@ import 'package:litlab_learning/feature/courses/controller/course_controller.dar
 import 'package:litlab_learning/feature/courses/repository/course_repository.dart';
 import 'package:litlab_learning/feature/materials/controller/material_controller.dart';
 import 'package:litlab_learning/model/materialModel.dart';
+import 'package:litlab_learning/model/users_model.dart';
 
 
 final materialRepositoryProvider=StateProvider((ref) =>MaterialRepository(firebaseFirestore: ref.read(firestoreProvider)) ,);
@@ -16,12 +17,31 @@ class MaterialRepository{
 
   CollectionReference<Map<String,dynamic>> get _courses =>
       _firebaseFirestore.collection(FirebaseConstants.courseCollection);
+  CollectionReference<Map<String,dynamic>> get _users =>
+      _firebaseFirestore.collection(FirebaseConstants.user);
 
-  Future<List<MaterialModel>> getMaterial(String selectCourse){
-    return _courses.doc(selectCourse).collection("material").get().then((value) =>
-        value.docs.map((e) => MaterialModel.fromMap(e.data()),).toList()
+  Stream<List<MaterialModel>> getMaterial(String selectCourse){
+    return _courses.doc(selectCourse).collection("material").snapshots().map((event) => event.docs.map((e) => MaterialModel.fromMap(e.data()),).toList(),);
 
-      ,);
+
+  }
+  addFavourite(String materialId,UserModel userModel){
+    List<dynamic> favorite=userModel.favourite;
+    favorite.add(materialId);
+    _users.doc(userModel.id).update(
+      userModel.copyWith(
+         favourite: favorite,
+      ).toMap()
+    );
+  }
+  remove(String materialId,UserModel userModel){
+    List<dynamic> favorite=userModel.favourite;
+    favorite.remove(materialId);
+    _users.doc(userModel.id).update(
+        userModel.copyWith(
+          favourite: favorite,
+        ).toMap()
+    );
   }
 
 
