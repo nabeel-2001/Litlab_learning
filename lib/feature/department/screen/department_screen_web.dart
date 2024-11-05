@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:litlab_learning/core/common/common_background.dart';
 import 'package:litlab_learning/core/common/common_button.dart';
 import 'package:litlab_learning/core/common/widgets/common_background_web.dart';
@@ -13,20 +14,22 @@ import 'package:litlab_learning/feature/auth/screens/OtpScreen.dart';
 import 'package:litlab_learning/feature/courses/screen/course_screen_web.dart';
 import 'package:litlab_learning/feature/department/controller/department_controller.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/OnBody_Screen.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/onboarding_screen3.dart';
+
+import 'package:litlab_learning/model/users_model.dart';
 
 import 'package:lottie/lottie.dart';
 
-class DepartmentScreen extends ConsumerStatefulWidget {
-  const DepartmentScreen({super.key});
+class DepartmentScreenWeb extends ConsumerStatefulWidget {
+  const DepartmentScreenWeb({super.key});
 
   @override
-  ConsumerState<DepartmentScreen> createState() => _OnBodyScreen1WebState();
+  ConsumerState<DepartmentScreenWeb> createState() => _OnBodyScreen1WebState();
 }
 
-class _OnBodyScreen1WebState extends ConsumerState<DepartmentScreen> {
+class _OnBodyScreen1WebState extends ConsumerState<DepartmentScreenWeb> {
 
 bool select =false;
+
   @override
   Widget build(BuildContext context) {
 
@@ -91,7 +94,7 @@ bool select =false;
                                                 children: [
                                                   Text(stream.department,
                                                     style: GoogleFonts.montserrat(
-                                                      fontWeight:FontWeight.w800,
+                                                      fontWeight:FontWeight.w900,
                                                       fontSize: scrWidth*0.012,
                                                       color: isSelected ? ColorPalette.white : ColorPalette.black,
 
@@ -191,10 +194,12 @@ bool select =false;
                 InkWell(
                   onTap: () {
                     if(selectedStreamId==null){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("pls select Stream")));
+                      ref.read(departmentControllerProvider).updateDepartment(departmentName: selectedStreamId!);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select Stream")));
                     }
                     else {
-                      context.go('/course_screen_web');
+                      ref.read(departmentControllerProvider).updateDepartment(departmentName: selectedStreamId!);
+                      Navigator.pushNamedAndRemoveUntil(context, 'course_screen', (route) => false);
                     }
                   },
                   child: Container(

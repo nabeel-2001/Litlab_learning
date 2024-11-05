@@ -149,14 +149,14 @@ class _SemesterWebScreenState extends ConsumerState<SemesterWebScreen> {
                     onTap: () {
                       if(select != null) {
                         if (select == 0) {
-                          context.go("/loading_screenWeb");
+                          Navigator.pushNamedAndRemoveUntil(context,'loading_screenWeb', (route) => false);
                         }
                         else{
                           showAnimatedDialog(context);
                         }
                       }
                       else{
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("pls Select Your Semester")));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please Select Your Semester")));
                       }
                     },
                     child:  Container(

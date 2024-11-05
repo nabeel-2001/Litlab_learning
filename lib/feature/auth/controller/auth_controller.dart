@@ -45,22 +45,18 @@ class AuthController extends StateNotifier<bool> {
           (studentModel) async {
         // If the user is new (no id), navigate to RegistrationWeb
         if (studentModel.id.isEmpty) {
+          _ref.read(userProvider.notifier).update((state) => studentModel);
           print("nooooooooooooooooooo");
           // Navigate to the registration screen
           Navigator.pushNamed(context, '/RegistrationWeb');
         } else {
           // If user details exist, set shared preferences and userProvider values
           currentUserId = studentModel.id;
-          print("hiiiiiiiiiiiiiiiiiiiiii");
-          _ref.read(userProvider.notifier).update((state) => studentModel);
-          final preferences = await SharedPreferences.getInstance();
-          await preferences.setString("userId", studentModel.id);
-          await preferences.setString("userEmail", studentModel.email);
-          await preferences.setString("userName", studentModel.name);
-          await preferences.setString("userProfile", studentModel.image);
+          print("hiiiiiiiiiiiiiiiiiiiiiilll$currentUserId");
+           _ref.read(userProvider.notifier).update((state) => studentModel);
 
           // Navigate to the main body screen
-          context.go('/on_body');
+          Navigator.pushNamedAndRemoveUntil(context, "onBody_screen", (route) => false,);
         }
       },
     );
@@ -106,7 +102,7 @@ class AuthController extends StateNotifier<bool> {
 
 
           var box = await Hive.openBox('userBox');
-          box.put('currentUser', userModel);
+         await  box.put('currentUser', userModel);
 
           // Navigate to the main screen after successful registration
           Navigator.pushNamedAndRemoveUntil(context, 'onBody_screen', (route) => false);
@@ -148,7 +144,7 @@ class AuthController extends StateNotifier<bool> {
             print("nooooooooooooooooooo");
             // Navigate to the registration screen
             showSnackBar(
-              message: "Unavailable to Login Pls Register  ",
+              message: "Unavailable to Login Please Register  ",
               context: context,
               icon: null,
               color: null,
@@ -157,19 +153,28 @@ class AuthController extends StateNotifier<bool> {
             // If user details exist, set shared preferences and userProvider values
             currentUserId = studentModel.id;
             _ref.read(userProvider.notifier).update((state) => studentModel);
-            final preferences = await SharedPreferences.getInstance();
-            await preferences.setString("userId", studentModel.id);
-            await preferences.setString("userEmail", studentModel.email);
-            await preferences.setString("userName", studentModel.name);
-            await preferences.setString("userProfile", studentModel.image);
             // Navigate to the main body screen
             var box = await Hive.openBox('userBox');
             box.put('currentUser', studentModel);
-         studentModel.department==''?Navigator.pushNamedAndRemoveUntil(context, '/on_body', (route) => false) :Navigator.pushNamedAndRemoveUntil(context, 'sideBar_Page', (route) => false);
+         studentModel.department==''?Navigator.pushNamedAndRemoveUntil(context, '/on_body', (route) => false) :Navigator.pushNamedAndRemoveUntil(context,'sideBar_Page', (route) => false);
           }
         });
   }
   Stream<UserModel> streamCurrentUser({required String userId}){
     return _authRepository.getUserDetail(userId: userId);
+  }
+  logout({required BuildContext context}) async {
+
+    Navigator.pushNamedAndRemoveUntil(context,"login_page", (route) => false,);
+    _ref.read(userProvider.notifier).state=null;
+    var box = await Hive.openBox('userBox');
+    await box.delete('currentUser');
+  }
+  getCurrentUser(String userId) async {
+   final user=await _authRepository.getCurrentUser(userId);
+   _ref.read(userProvider.notifier).state = user;
+   var box = await Hive.openBox('userBox');
+   await  box.get('currentUser') as UserModel?;
+
   }
 }

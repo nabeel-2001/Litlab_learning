@@ -7,9 +7,6 @@ import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/common_paper/controller/common_paper_controller.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/onbody_screen_web.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/semester_screen.dart';
-import 'package:litlab_learning/feature/semester/screen/semester_web_screen.dart';
 class CommonPaperScreen extends ConsumerStatefulWidget {
   const CommonPaperScreen({super.key});
   @override
@@ -17,9 +14,11 @@ class CommonPaperScreen extends ConsumerStatefulWidget {
 }
 class _SelectPaperWebState extends ConsumerState<CommonPaperScreen> {
   updateProfile() async {
+    print(ref.read(departmentId));
+    print(ref.read(commonPaper));
+    print("${ref.read(userProvider)!.id}qqqqqq");
     await ref.read(commonPaperControllerProvider).
-    updateProfile(userModel: ref.read(userProvider)!, department: ref.read(departmentId)!,
-        course: ref.read(selectCourse)!, commonCourse: ref.read(commonPaper)!);
+     updateProfile(commonCourse: ref.read(commonPaper)!);
   }
   @override
   Widget build(BuildContext context) {
@@ -39,12 +38,12 @@ class _SelectPaperWebState extends ConsumerState<CommonPaperScreen> {
                     SizedBox(
                       height: scrHeight*0.1,
 
-                      child: Text("Select your papers!",
+                      child: Text("Select your Common papers!",
                         style: GoogleFonts.montserrat(
                             height: 1.2,
                             letterSpacing: -0.8,
                             color: ColorPalette.black,
-                            fontSize: scrWidth*0.03,
+                            fontSize: scrWidth*0.02,
                             fontWeight: FontWeight.bold
                         ),),
                     ),
@@ -104,9 +103,9 @@ class _SelectPaperWebState extends ConsumerState<CommonPaperScreen> {
                     InkWell(
                       onTap: () {
                         if(select==null){
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("pls Select Common Paper")));
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please Select Common Paper")));
                         }else{
-                        context.go('/semester_screenWeb');
+                          Navigator.pushNamedAndRemoveUntil(context, 'semester_screen', (route) => false);
                          updateProfile();
                         }
                       },

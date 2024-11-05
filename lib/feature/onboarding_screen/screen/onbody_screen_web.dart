@@ -304,7 +304,7 @@ class _OnBodyScreenWebState extends State<OnBodyScreenWeb> {
               child: GestureDetector(
                 onTap: () {
                   // In department_screen (or any screen you want to refresh from):/ Pop until the first route
-                  context.go('/department');
+                  Navigator.pushNamedAndRemoveUntil(context, 'department_screen', (route) => false);
                 },
                                                                                                                                                                                                                                         child: Container(
                   height: scrHeight*0.08,

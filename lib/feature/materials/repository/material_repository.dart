@@ -5,7 +5,7 @@ import 'package:litlab_learning/core/contants/provider/firebase_constant_provide
 import 'package:litlab_learning/feature/courses/controller/course_controller.dart';
 import 'package:litlab_learning/feature/courses/repository/course_repository.dart';
 import 'package:litlab_learning/feature/materials/controller/material_controller.dart';
-import 'package:litlab_learning/model/materialModel.dart';
+import 'package:litlab_learning/model/material_model.dart';
 import 'package:litlab_learning/model/users_model.dart';
 
 

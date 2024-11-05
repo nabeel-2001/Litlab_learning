@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:litlab_learning/core/local/local_variables.dart';
 
 
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -51,6 +52,7 @@ class _MaterialPdfViewState extends State<MaterialPdfView> {
   @override
   void initState() {
     print(widget.pdfUrl);
+    print("widget.pdfUrl");
 
     // TODO: implement initState
     super.initState();
@@ -64,11 +66,15 @@ class _MaterialPdfViewState extends State<MaterialPdfView> {
               Navigator.pop(context);
             },),
         ),
-        body: SfPdfViewer.network(
-            enableDoubleTapZooming: true,
+        body: Container(
 
-
-            widget.pdfUrl));
+          color: Colors.red,
+height: scrHeight,
+          width: scrWidth,
+          child: SfPdfViewer.network(
+              enableDoubleTapZooming: true,
+              widget.pdfUrl),
+        ));
   }
 }
 

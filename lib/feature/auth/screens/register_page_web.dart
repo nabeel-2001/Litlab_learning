@@ -55,7 +55,7 @@ addUsers() async {
     id: email.text,
     collegeName: college.text,
     search: setSearchParameters(name.text)
-  );
+  )??UserModel(name: name.text, id: email.text, email: email.text, collegeName: college.text, department: "", course: "", commonCourse: "", phone: phone.text, image: "", search:[], favourite: [], delete: false, password: password.text);
   await ref.read(authControllerProvider).addUser(context: context,userModel: users!);
   name.clear();
   email.clear();
@@ -94,8 +94,10 @@ String? _validateEmail(String? value) {
 String? _validatePassword(String? value) {
   if (value == null || value.trim().isEmpty) {
     return 'Please enter your password';
-  } else if (value.trim().length < 6) {
-    return 'Password must be at least 6 characters long';
+  } else if (!RegExp(
+    r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$',
+  ).hasMatch(value)) {
+    return 'Password must be at least 8 characters long ';
   }
   return null;
 }
@@ -115,9 +117,10 @@ String? _validateCollege(String? value) {
   }
   return null;
 }
-
+bool eye=true;
   @override
   Widget build(BuildContext context) {
+
   UserModel?  users = ref.watch(userProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFE5F3FF), // light background color
@@ -161,12 +164,12 @@ String? _validateCollege(String? value) {
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: SingleChildScrollView(
-                child: Form(
-key: _formKey,
-                  child: SizedBox(
-                    height: scrHeight*0.85,
-                    width: scrWidth*0.25,
+              child: Form(
+              key: _formKey,
+                child: SizedBox(
+                  height: scrHeight*0.88,
+                  width: scrWidth*0.25,
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [
                         // Input fields
@@ -176,7 +179,7 @@ key: _formKey,
                           controller: name,
                       validator: (value) => _validateName(value),
                           decoration: InputDecoration(
-
+                    
                             labelText: 'Name',
                             hintText: 'Enter your full name',
                             border: OutlineInputBorder(
@@ -214,11 +217,18 @@ key: _formKey,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
+                          obscureText:eye ,
                           autovalidateMode: AutovalidateMode
                               .onUserInteraction,
                           controller: password,
                           validator: (value) => _validatePassword(value),
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(onPressed: () {
+                              eye=!eye;
+                              setState(() {
+                    
+                              });
+                            }, icon:eye?Icon(CupertinoIcons.eye_fill):Icon(CupertinoIcons.eye_slash_fill)),
                             labelText: 'password',
                             hintText: 'enter password',
                             border: OutlineInputBorder(
@@ -228,11 +238,18 @@ key: _formKey,
                         ),
                         const SizedBox(height: 14),
                         TextFormField(
+                          obscureText:eye ,
                           autovalidateMode: AutovalidateMode
                               .onUserInteraction,
                           controller: confirmPassword,
                           validator: (value) => _validateConfirmPassword(value),
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(onPressed: () {
+                              eye=!eye;
+                              setState(() {
+                    
+                              });
+                            }, icon:eye?Icon(CupertinoIcons.eye_fill):Icon(CupertinoIcons.eye_slash_fill)),
                             labelText: 'Conform password',
                             hintText: 'enter Conform password',
                             border: OutlineInputBorder(
@@ -255,24 +272,24 @@ key: _formKey,
                           ),
                         ),
                         const SizedBox(height: 28),
-
+                    
                         // Register button
                         GestureDetector(
                           onTap: () {
-
+                    
                             // Action for Register button
                     if (_formKey.currentState!
                     .validate()) {
-                        name.text.isEmpty?toastificationErrorWidget(context,"pls enter name"):email.text.isEmpty?password.text.isEmpty?toastificationErrorWidget(context,"pls enter password"):
-                        toastificationErrorWidget(context,"pls enter email"):phone.text.isEmpty?toastificationErrorWidget(context,"pls enter phone number"):
-                            college.text.isEmpty?toastificationErrorWidget(context,"pls enter college"):addUsers();
+                        name.text.isEmpty?toastificationErrorWidget(context,"Please enter name"):email.text.isEmpty?password.text.isEmpty?toastificationErrorWidget(context,"Please enter password"):
+                        toastificationErrorWidget(context,"Please enter email"):phone.text.isEmpty?toastificationErrorWidget(context,"Please enter phone number"):
+                            college.text.isEmpty?toastificationErrorWidget(context,"Please enter college"):addUsers();
                     }
                           },
                           child: Padding(
                             padding:  EdgeInsets.only(left: scrWidth*0.05,right: scrWidth*0.05),
                             child: Container(
                               height: scrHeight * 0.07,
-
+                    
                               decoration: BoxDecoration(
                                 color: const Color(0xFF87CEEB), // button color
                                 borderRadius: BorderRadius.circular(12),
@@ -291,19 +308,19 @@ key: _formKey,
                           ),
                         ),
                         const SizedBox(height: 20),
-
+                    
                         // Social login buttons
                         ElevatedButton.icon(
                           onPressed: () async {
-
+                    
                             // Google sign-in action
                          await ref.read(authControllerProvider).signInWithGoogle(context);
                          print(name);
                          UserModel? user= ref.watch(userProvider);
                          name.text = user!.name;
                          email.text = user!.email;
-
-
+                    
+                    
                                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -312,13 +329,17 @@ key: _formKey,
                             ),
                           ),
                           icon: SvgPicture.asset('assets/images/google_icon.svg', height: 20),
-                          label: const Text(
+                          label:  Text(
+
                             'Continue with Google',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(color: Colors.black,
+                              fontSize: scrWidth*0.01,
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
-
+                    
                         // Login redirect
                          Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -330,7 +351,7 @@ key: _formKey,
                               },
                               child: Text(
                                 "Login",
-
+                    
                                 style: TextStyle(
                                   fontSize: scrWidth*0.013,
                                   color: Color(0xFF87CEEB), // same as button color

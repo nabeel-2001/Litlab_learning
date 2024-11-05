@@ -10,7 +10,7 @@ import 'package:litlab_learning/core/common/widgets/toastification.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/auth/controller/auth_controller.dart';
-import 'package:litlab_learning/feature/common_paper/screen/select_paper_web.dart';
+
 
 class LoginPageWeb extends ConsumerStatefulWidget {
   const LoginPageWeb({super.key});
@@ -20,7 +20,25 @@ class LoginPageWeb extends ConsumerStatefulWidget {
 }
 
 class _LoginPageWebState extends ConsumerState<LoginPageWeb> {
-
+  String? _validateEmail(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter your email';
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+  String? _validatePassword(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter your password';
+    } else if (!RegExp(
+      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$',
+    ).hasMatch(value)) {
+      return 'Password must be at least 8 characters long ';
+    }
+    return null;
+  }
+bool eye=true;
   TextEditingController password=TextEditingController();
   TextEditingController email=TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -85,15 +103,7 @@ await ref.read(authControllerProvider).loginUser(context: context, email: email,
                           autovalidateMode: AutovalidateMode
                               .onUserInteraction,
                           controller: email,
-                          validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty ||
-                                value.trim().length < 3) {
-                              return "Must contain atleast 3 characters ";
-                            } else {
-                              return null;
-                            }
-                          },
+                          validator:_validateEmail,
                           decoration: InputDecoration(
                             labelText: 'email',
                             hintText: 'abc@gmail.com',
@@ -105,11 +115,22 @@ await ref.read(authControllerProvider).loginUser(context: context, email: email,
                         const SizedBox(height: 16),
                         const SizedBox(height: 16),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode
+                              .onUserInteraction,
+                          validator: _validatePassword,
+                          obscureText: eye,
                           controller: password,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(onPressed: () {
+                              eye=!eye;
+                              setState(() {
+
+                              });
+                            }, icon:eye?Icon(CupertinoIcons.eye_fill):Icon(CupertinoIcons.eye_slash_fill)),
                             labelText: 'password',
-                            hintText: 'pls enter Password',
+                            hintText: 'Please enter Password',
                             border: OutlineInputBorder(
+
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
@@ -124,8 +145,8 @@ await ref.read(authControllerProvider).loginUser(context: context, email: email,
                             // Action for Register button
                             if (_formKey.currentState!
                                 .validate()) {
-                              email.text.isEmpty?toastificationErrorWidget(context,"pls enter email"):password.text.isEmpty?
-                              toastificationErrorWidget(context,"pls enter password"):loginUsers(email: email.text.trim(),password: password.text.trim());
+                              email.text.isEmpty?toastificationErrorWidget(context,"Please enter email"):password.text.isEmpty?
+                              toastificationErrorWidget(context,"Please enter password"):loginUsers(email: email.text.trim(),password: password.text.trim());
                             }
                           },
                           child: Padding(

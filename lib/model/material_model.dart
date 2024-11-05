@@ -1,12 +1,14 @@
 import 'package:hive/hive.dart';
+ // Required for the generated adapter
+part 'material_model.g.dart';
 
+
+@HiveType(typeId: 1) // Assign a unique typeId for this model (different from UserModel)
 class MaterialModel extends HiveObject {
   @HiveField(0)
   final String department;
-
   @HiveField(1)
   final String course;
-
   @HiveField(2)
   final String id;
 
@@ -25,7 +27,7 @@ class MaterialModel extends HiveObject {
   @HiveField(7)
   final String fileUrl;
 
-   MaterialModel({
+  MaterialModel({
     required this.department,
     required this.course,
     required this.id,
@@ -35,7 +37,6 @@ class MaterialModel extends HiveObject {
     required this.createTime,
     required this.fileUrl,
   });
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -124,4 +125,5 @@ class MaterialModel extends HiveObject {
   }
 
 //</editor-fold>
+
 }

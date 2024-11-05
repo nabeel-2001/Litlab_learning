@@ -73,15 +73,18 @@ final  userDetails=ref.watch(userProvider);
                               ),
                             ),
                             placeholder: (context, url) => CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Icon(Icons.error),
+                            errorWidget: (context, url, error) => CircleAvatar(
+                              radius: scrWidth*0.025,
+                              backgroundImage: const AssetImage("assets/images/profile_image.png"),
+                            ),
                           ),
                           SizedBox(height: scrWidth * 0.02),
                           Row(
                             children: [
                               SizedBox(
-                                width: scrWidth*0.01,
+                                width: scrWidth*0.016,
                                 child: SvgPicture.asset(
-                                  "assets/images/profile_bottom.svg",
+                                  "assets/images/profilesetting.svg",
                                   width: scrWidth * 0.015,
                                   // Adjust icon size
                                 ),

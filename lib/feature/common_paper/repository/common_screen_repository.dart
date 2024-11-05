@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:litlab_learning/core/contants/firebase_constant.dart';
 import 'package:litlab_learning/core/contants/provider/firebase_constant_provider.dart';
 import 'package:litlab_learning/model/common_paper.dart';
-import 'package:litlab_learning/model/materialModel.dart';
+
+import 'package:litlab_learning/model/material_model.dart';
 import 'package:litlab_learning/model/users_model.dart';
 final commonScreenRepositoryProvider=Provider((ref) =>CommonScreenRepository(firebaseFirestore: ref.read(firestoreProvider)) ,);
 class CommonScreenRepository{
@@ -28,7 +29,7 @@ class CommonScreenRepository{
   }
   updateProfile({required UserModel userModel, required String department,required String course,required String commonCourse}){
     _users.doc(userModel.id).update(userModel.copyWith(department: department,
-        course: course,commonCourse: commonCourse
+        course: course,commonCourse: commonCourse,
 
     ).toMap());
   }

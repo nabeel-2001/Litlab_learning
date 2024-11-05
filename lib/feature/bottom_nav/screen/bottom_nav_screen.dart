@@ -5,7 +5,10 @@ import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/Modules/screen/module_summery.dart';
 import 'package:litlab_learning/feature/Profile/screen/profile_screen.dart';
+import 'package:litlab_learning/feature/Profile/screen/profile_setting_web.dart';
+import 'package:litlab_learning/feature/Profile/screen/profile_settings.dart';
 import 'package:litlab_learning/feature/download/downloading_screen.dart';
+import 'package:litlab_learning/feature/home/screen/home_screen.dart';
 import 'package:litlab_learning/feature/materials/screen/material_Page.dart';
 
 import 'package:litlab_learning/feature/save_notes/screen/save_note.dart';
@@ -24,10 +27,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   int selectindex=0;
    List<Widget> Pages= [
-     MaterialScreen(),
-       const DownloadingScreen(),
+      const HomeScreen(),
+
        const SaveNote(),
-       const ProfileScreen(),
+       const ProfileSettings(),
      ];
 
    //
@@ -134,16 +137,22 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
            items: [
              SalomonBottomBarItem(
                selectedColor: ColorPalette.bottomButtonColor,
-                 icon: SvgPicture.asset("assets/images/homeicon.svg",width: 30,), title:const Text("")),
+                 icon: SvgPicture.asset("assets/images/homeicon.svg",width: 30,), title: Text("Home",
+             style: TextStyle(
+               color: ColorPalette.black
+             ),)),
              SalomonBottomBarItem(
                  selectedColor: ColorPalette.bottomButtonColor,
-                 icon: SvgPicture.asset("assets/images/downloading.svg",width: 30,), title:const Text("")),
+                 icon: SvgPicture.asset("assets/images/select_favorite.svg",width: 20,), title: Text("Favorite",
+                 style: TextStyle(
+                     color: ColorPalette.black
+                 ))),
              SalomonBottomBarItem(
                  selectedColor: ColorPalette.bottomButtonColor,
-                 icon: SvgPicture.asset("assets/images/fovorite_bottom.svg",width: 20,), title:const Text("")),
-             SalomonBottomBarItem(
-                 selectedColor: ColorPalette.bottomButtonColor,
-                 icon: SvgPicture.asset("assets/images/profile_bottom.svg",width: 30,), title:const Text(""))
+                 icon: SvgPicture.asset("assets/images/profile_bottom.svg",width: 30,), title: Text("Profile",
+                 style: TextStyle(
+                     color: ColorPalette.black
+                 )))
            ]),
        body:Pages[_currentIndex] ,
      );

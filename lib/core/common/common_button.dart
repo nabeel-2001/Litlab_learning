@@ -14,11 +14,11 @@ class _CommonButtonsState extends State<CommonButtons> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: scrHeight*0.06,
+      height: scrHeight*0.09,
       width: scrWidth*0.95,
       decoration: BoxDecoration(
           color: ColorPalette.yellow,
-          borderRadius: BorderRadius.circular(scrWidth*0.04)
+          borderRadius: BorderRadius.circular(scrWidth*0.02)
       ),
       child:  Center(child: Text("Next",
         style: GoogleFonts.montserrat(

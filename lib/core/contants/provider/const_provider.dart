@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:litlab_learning/model/course_model.dart';
-import 'package:litlab_learning/model/materialModel.dart';
+import 'package:litlab_learning/model/material_model.dart';
 import 'package:litlab_learning/model/users_model.dart';
 
 final selectionProvider = StateProvider<bool>((ref) => false);

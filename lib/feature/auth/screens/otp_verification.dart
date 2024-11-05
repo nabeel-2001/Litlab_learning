@@ -201,7 +201,7 @@ class OtpVerificationScreen extends StatelessWidget {
                     onTap: () {
                       if(otpController.text=="0000") {
                         Navigator.push(context, MaterialPageRoute(builder: (
-                            context) => const OnboardingScreen2(),));
+                            context) => const DepartmentScreen(),));
                       }
                       else{
                         toastificationErrorWidget(context,"Wrong Verification");

@@ -67,7 +67,7 @@ class AuthRepository {
         if (checkStudent.docs.isNotEmpty) {
           studentModel = UserModel.fromMap(checkStudent.docs.first.data());
 
-          print("ggggggiiiiiiiiiiiiiiiiiiiii");
+          print("ggggggiiiiiiiiiiiiiiiiiiiiilll");
           print("${studentModel!.phone}  kkkkkkkkkkkkkk");
           return right(studentModel!);
         } else {
@@ -100,8 +100,18 @@ class AuthRepository {
     }
   }
 
-  addUsers({required UserModel userModel}) {
-    _users.doc(userModel.email).set(userModel.toMap());
+  FutureEither<UserModel> addUsers({required UserModel userModel}) async {
+    try {
+      await _users.doc(userModel.email).set(userModel.toMap());
+    }
+    on FirebaseException catch (ex) {
+      throw ex.message!;
+    }
+    catch (e, s) {
+      return left(Failure(message: e.toString()));
+    }
+
+return right(userModel);
   }
   FutureEither<UserModel?> loginUsers(
       {required String email, required String password}) async {
@@ -131,6 +141,10 @@ class AuthRepository {
  Stream<UserModel> getUserDetail({required String userId}){
 return _users.doc(userId).snapshots()
     .map((event) => UserModel.fromMap(event.data() as Map<String,dynamic>),);
+  }
+ Future<UserModel> getCurrentUser(String userId){
+   return  _users.doc(userId).get().then((value) => UserModel.fromMap(value.data() as Map<String,dynamic>),);
+
   }
 }
 

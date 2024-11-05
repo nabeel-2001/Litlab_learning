@@ -25,15 +25,19 @@ class SideBarPage extends ConsumerStatefulWidget {
 }
 
 class _SideBarPageState extends ConsumerState<SideBarPage> {
-  getUserFromHive() async {
-    var box = await Hive.openBox('userBox');
-    UserModel? userModel=await  box.get('currentUser') as UserModel?;
-    ref.read(userProvider.notifier).update((state) => userModel,);
-    print(userModel!.id);
+  // Store UserModel
+
+   getCurrentUser()  async {
+     // var box = await Hive.openBox('userBox');
+     // UserModel? user = box.get(
+     //     'currentUser');
+    // ref.read(authControllerProvider).getCurrentUser(ref.read(userProvider)!.id);
   }
+
+
   @override
   void didChangeDependencies() {
-    getUserFromHive();
+    getCurrentUser();
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
@@ -115,6 +119,17 @@ class ExampleSidebarX extends ConsumerWidget {
     final controller = SidebarXController(selectedIndex: 0, extended: true);
 
     return SidebarX(
+      footerBuilder: (context, extended) {
+        return GestureDetector(
+          onTap: () {
+          ref.read(authControllerProvider).logout(context: context);
+          },
+          child: ListTile(
+            leading: Icon(Icons.logout_outlined),
+            title: Text("Logout"),
+          ),
+        );
+      },
       controller: controller,
       theme: SidebarXTheme(
         width: 200,

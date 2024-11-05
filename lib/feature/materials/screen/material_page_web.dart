@@ -15,8 +15,7 @@ import 'package:litlab_learning/feature/Modules/screen/module_summery_web.dart';
 import 'package:litlab_learning/feature/auth/controller/auth_controller.dart';
 import 'package:litlab_learning/feature/materials/controller/material_controller.dart';
 import 'package:litlab_learning/feature/materials/screen/material_view_pdf.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/semester_screen.dart';
-import 'package:litlab_learning/model/materialModel.dart';
+
 import 'package:litlab_learning/model/users_model.dart';
 
 class MaterialPageWeb extends ConsumerStatefulWidget {
@@ -35,24 +34,16 @@ class _MaterialPageWebState extends ConsumerState<MaterialPageWeb> {
   // getCourseDetails(String courseId) async {
   //   await ref.read(materialControllerProvider.notifier).getMaterial(courseId);
   // }
-  getUserFromHive() async {
-    var box = await Hive.openBox('userBox');
-    UserModel? userModel=await  box.get('currentUser') as UserModel?;
-    ref.read(userProvider.notifier).update((state) => userModel,);
-    print(userModel!.id);
-  }
-
-  @override
-  void didChangeDependencies() {
-    getUserFromHive();
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
+  // getUserFromHive() async {
+  //   // var box = await Hive.openBox('userBox');
+  //   // UserModel? userModel=await  box.get('currentUser') as UserModel?;
+  //   // ref.read(userProvider.notifier).update((state) => userModel,);
+  //   print(userModel!.id);
+  //   print("${userModel!.course}iiiiii");
+  // }
   @override
   Widget build(BuildContext context) {
     final user = ref.read(userProvider);
-
-
     return Scaffold(
       backgroundColor: ColorPalette.skyBlue,
       body: Stack(
@@ -61,7 +52,6 @@ class _MaterialPageWebState extends ConsumerState<MaterialPageWeb> {
         user==null?const Center(child: CircularProgressIndicator(),): Center(
            child: SizedBox(
              width: scrWidth*1,
-
              child: Padding(
                padding: const EdgeInsets.only(left: 20.0),
                child: Column(
@@ -126,6 +116,7 @@ class _MaterialPageWebState extends ConsumerState<MaterialPageWeb> {
                             return   InkWell(
                               onTap: () {
                                 ref.read(selectMaterial.notifier).state=data[index];
+
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 8.0,right: 8),
@@ -184,7 +175,8 @@ class _MaterialPageWebState extends ConsumerState<MaterialPageWeb> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                           children: [
                                                             InkWell(
-                                                              onTap: () {
+                                                              onTap: () async {
+                                                               await ref.read(materialControllerProvider).addMaterialsUser(material: data[index]);
                                                                 ref.read(selectedPageIndexProvider.notifier).state = 4;
                                                               },
                                                               child: Container(
@@ -252,12 +244,14 @@ class _MaterialPageWebState extends ConsumerState<MaterialPageWeb> {
                         ),
                       );
                     }, error: (error, stackTrace) {
+                      print("${error.toString()}lllllllllllll");
                       return Text(error.toString());
                     }, loading: () {
                       return Center(child: CircularProgressIndicator(),);
                     },);
                   }, error: (error, stackTrace) {
-                    return Text(error.toString());
+                    print(error.toString());
+                    return Text("${error.toString()}vvvvvvvvvv");
                   }, loading: () {
                     return const CircularProgressIndicator();
                   },),

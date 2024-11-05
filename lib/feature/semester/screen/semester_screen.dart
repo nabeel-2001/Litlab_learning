@@ -1,21 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:litlab_learning/core/common/common_background.dart';
 import 'package:litlab_learning/core/common/common_button.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
+import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/loading_screen.dart';
-class SemesterScreen extends StatefulWidget {
+class SemesterScreen extends ConsumerStatefulWidget {
   const SemesterScreen({super.key});
 
   @override
-  State<SemesterScreen> createState() => _SemesterScreenState();
+  ConsumerState<SemesterScreen> createState() => _SemesterScreenState();
 }
 
-class _SemesterScreenState extends State<SemesterScreen> {
+class _SemesterScreenState extends ConsumerState<SemesterScreen> {
+
+  void showAnimatedDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Alert',
+      transitionDuration: Duration(milliseconds: 400),
+      pageBuilder: (context, animation1, animation2) {
+        return AlertDialog(
+          title: Text('This Semester Not Found'),
+          content: Text('Comming Soon'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+      transitionBuilder: (context, animation1, animation2, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation1,
+            curve: Curves.easeInOut,
+          ),
+          child: child,
+        );
+      },
+    );
+  }
   int select=-1;
   @override
   Widget build(BuildContext context) {
+    final select=ref.watch(selectSemester);
     return Scaffold(
         body: Stack(
           children: [
@@ -61,7 +94,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
                     height: scrHeight*0.55,
                     width: scrWidth*1,
                     child: GridView.builder(gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-                      childAspectRatio: 2,
+                      childAspectRatio: 2.5,
                       crossAxisSpacing: scrWidth*0.05,
                       mainAxisSpacing: scrWidth*0.05,
 
@@ -75,11 +108,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            select=index;
-
-                            setState(() {
-
-                            });
+                            ref.read(selectSemester.notifier).update((state) =>index ,);
                           },
                           child: Container(
                             width: scrWidth*0.25,
@@ -96,7 +125,7 @@ class _SemesterScreenState extends State<SemesterScreen> {
                               child: Text("Semester $index",
                                 style: GoogleFonts.roboto(
                                     fontWeight:FontWeight.w600,
-                                    fontSize: scrWidth*0.05,
+                                    fontSize: scrWidth*0.045,
                                     color: select==index?ColorPalette.white:ColorPalette.black
                                 ),),
                             ),
@@ -112,7 +141,17 @@ class _SemesterScreenState extends State<SemesterScreen> {
                   //  SizedBox(height: scrHeight*0.19,),
                   InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoadingScreen(),));
+                      if(select != null) {
+                        if (select == 0) {
+                          Navigator.pushNamedAndRemoveUntil(context,'loading_screenWeb', (route) => false);
+                        }
+                        else{
+                          showAnimatedDialog(context);
+                        }
+                      }
+                      else{
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please Select Your Semester")));
+                      }
                     },
                     child: const CommonButtons(),
                   )

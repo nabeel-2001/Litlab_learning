@@ -3,8 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
-import 'package:litlab_learning/feature/bottom_nav/screen/side_bar.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/onbody_screen_web.dart';
+
 
 class LoadingScreenWeb extends StatefulWidget {
 
@@ -18,7 +17,7 @@ class _LoadingScreenWebState extends State<LoadingScreenWeb> {
   @override
   void initState() {
     // TODO: implement initState
-    Future.delayed(const Duration(seconds: 5)).then((value) => context.go('sideBar_Page'),);
+    Future.delayed(const Duration(seconds: 5)).then((value) => Navigator.pushNamedAndRemoveUntil(context, 'sideBar_Page', (route) => false),);
     super.initState();
   }
   @override

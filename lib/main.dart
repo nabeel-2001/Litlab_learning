@@ -6,12 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:litlab_learning/core/common/responsive_screens/common_paper_responsive.dart';
+import 'package:litlab_learning/core/common/responsive_screens/course_responsive_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/login_response_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/registration_response_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/reponsive_material_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/responsive_department_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/responsive_home.dart';
+import 'package:litlab_learning/core/common/responsive_screens/responsive_onbody_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/responsive_semester_screen.dart';
+import 'package:litlab_learning/core/common/responsive_screens/resposive_module_summery.dart';
+import 'package:litlab_learning/core/common/responsive_screens/sidebar_responsive.dart';
+import 'package:litlab_learning/core/common/responsive_screens/splash_response_screen.dart';
 import 'package:litlab_learning/feature/auth/screens/OtpScreen.dart';
 import 'package:litlab_learning/feature/auth/screens/login_page_web.dart';
 import 'package:litlab_learning/feature/auth/screens/register_page_web.dart';
 import 'package:litlab_learning/feature/auth/screens/registeration_page.dart';
 import 'package:litlab_learning/feature/bottom_nav/screen/side_bar.dart';
-import 'package:litlab_learning/feature/common_paper/screen/select_paper_web.dart';
 import 'package:litlab_learning/feature/courses/screen/course_screen_web.dart';
 import 'package:litlab_learning/feature/department/screen/department_screen_web.dart';
 import 'package:litlab_learning/feature/download/downloading_screen.dart';
@@ -23,17 +34,14 @@ import 'package:litlab_learning/feature/materials/screen/material_view_pdf.dart'
 import 'package:litlab_learning/feature/onboarding_screen/screen/OnBody_Screen.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/loading_screen.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/loading_screen_web.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/onboarding_screen1.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/onboarding_screen3.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/onbody_screen_web.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/select_Paper.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/semester_screen.dart';
 import 'package:litlab_learning/feature/semester/screen/semester_web_screen.dart';
 import 'package:litlab_learning/feature/splash_screen/screen/splash_screen.dart';
 import 'package:litlab_learning/feature/bottom_nav/screen/side_bar.dart';
 import 'package:litlab_learning/feature/splash_screen/screen/splash_screen_web.dart';
 import 'package:litlab_learning/firebase_options.dart';
 import 'package:litlab_learning/model/common_paper.dart';
+import 'package:litlab_learning/model/material_model.dart';
 import 'package:litlab_learning/model/users_model.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'core/local/local_variables.dart';
@@ -49,6 +57,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   if(!Hive.isAdapterRegistered(UserModelAdapter().typeId)){
   Hive.registerAdapter(UserModelAdapter());
+  Hive.registerAdapter(MaterialModelAdapter());
   }
   runApp(
     //
@@ -75,6 +84,7 @@ class MyApp extends StatelessWidget {
 
         FocusManager.instance.primaryFocus!.unfocus();
       },
+
       child: MaterialApp(
       debugShowCheckedModeBanner: false,
         // routerConfig: _router,
@@ -82,29 +92,28 @@ class MyApp extends StatelessWidget {
         // builder: DevicePreview.appBuilder,
         initialRoute: '/',
         routes: {
-         '/': (context) => const SplashScreenWeb(),
-          '/onBody_screen/department_screen/course_screen_web': (context) => const CourseScreenWeb(),
-          'onBody_screen': (context) => const OnBodyScreenWeb(),
-          '/onBody_screen/department_screen':(context)=>const DepartmentScreen(),
-          '/sideBar_Page/home_screen':(context)=>const HomeScreenWeb(),
-          '/course_screen':(context)=>const CourseScreenWeb(),
-          '/common_screen':(context)=> const CommonPaperScreen(),
-          '/semester_screen':(context)=>const SemesterWebScreen(),
-          '/loading_screenWeb':(context)=>const LoadingScreenWeb(),
-          'sideBar_Page':(context)=>const SideBarPage(),
-          'login_page':(context)=>const LoginPageWeb(),
-          'registration':(context)=>const RegistrationWeb(),
-          'sideBar_Page/material_pageWeb':(context)=>const MaterialPageWeb(),
-
-
-
-
+         '/': (context) =>  const SplashResponsiveLayout(),
+          'onBody_screen/department_screen/course_screen_web': (context) => const CourseScreenWeb(),
+          'onBody_screen': (context) => const OnBodyResponsive(),
+          'department_screen':(context)=>const DepartmentResponsiveLayout(),
+          'sideBar_Page/home_screen':(context)=>const HomeResponsiveLayout(),
+          'course_screen':(context)=>const CourseResponsiveLayout(),
+          'common_screen':(context)=> const CommonPaperResponsiveLayout(),
+          'semester_screen':(context)=>const SemesterResponsiveLayout(),
+          'loading_screenWeb':(context)=>const LoadingScreenWeb(),
+            'sideBar_Page':(context)=>const SideBarResponsiveLayout(),
+          'login_page':(context)=>const LoginResponsiveLayout(),
+          'registration':(context)=>const RegistrationResponsiveLayout(),
+          'sideBar_Page/material_pageWeb':(context)=>const MaterialPageResponsive(),
+          'sideBar_Page/material_pageWeb/module_summery':(context)=>const ModuleSummeryResponsiveLayout(),
         },
 
       ),
     );
   }
 }
+
+
 
 // final GoRouter _router = GoRouter(
 //   routes: [

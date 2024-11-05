@@ -6,8 +6,7 @@ import 'package:litlab_learning/core/common/widgets/common_background_web.dart';
 import 'package:litlab_learning/core/contants/assets_image_constant.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
-import 'package:litlab_learning/feature/common_paper/screen/select_paper_web.dart';
-import 'package:litlab_learning/feature/onboarding_screen/screen/select_Paper.dart';
+
 
 class OnBodyScreen3Web extends StatefulWidget {
   const OnBodyScreen3Web({super.key});

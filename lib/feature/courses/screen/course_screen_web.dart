@@ -4,15 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:litlab_learning/core/common/widgets/common_background_web.dart';
 import 'package:litlab_learning/core/contants/assets_image_constant.dart';
 import 'package:litlab_learning/core/contants/color_constants.dart';
 import 'package:litlab_learning/core/contants/provider/const_provider.dart';
 import 'package:litlab_learning/core/local/local_variables.dart';
-import 'package:litlab_learning/feature/common_paper/screen/select_paper_web.dart';
 import 'package:litlab_learning/feature/courses/controller/course_controller.dart';
 import 'package:litlab_learning/feature/materials/controller/material_controller.dart';
 import 'package:litlab_learning/feature/onboarding_screen/screen/onbody_screen_web.dart';
+import 'package:litlab_learning/model/users_model.dart';
 
 
 class CourseScreenWeb extends ConsumerStatefulWidget {
@@ -48,13 +49,19 @@ class _CourseScreenWebState extends ConsumerState<CourseScreenWeb> {
     },
 
   ];
+  getDepartmentId() async {
+    var box = await Hive.openBox('userBox');
+    UserModel? a =await box.get('currentUser');
+    print(a?.department??'');
+    ref.read(courseControllerProvider.notifier).getCourse(a?.department??"");
+  }
   @override
   void initState() {
     super.initState();
     // Fetch courses when the widget is initialized
-    Future.microtask(() {
-      ref.read(courseControllerProvider.notifier).getCourse(ref.watch(departmentId)!);
-    });
+
+      getDepartmentId();
+
   }
 
 
@@ -96,7 +103,7 @@ class _CourseScreenWebState extends ConsumerState<CourseScreenWeb> {
 
                           },
                           child: Container(
-                            width: scrWidth*0.08,
+                            width: scrWidth*0.09,
                             height: scrHeight*0.09,
                             color: isSelected?ColorPalette.black:ColorPalette.white,
                             child: Padding(
@@ -145,10 +152,11 @@ class _CourseScreenWebState extends ConsumerState<CourseScreenWeb> {
                   InkWell(
                     onTap: () {
                       if(selectCourseId==null){
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("pls Select Your Course")));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please Select Your Course")));
                       }
                       else {
-                        context.go("/common_screen");
+                        ref.read(courseControllerProvider.notifier).updateDepartment(courseId: selectCourseId);
+                        Navigator.pushNamedAndRemoveUntil(context,'common_screen', (route) => false);
 
                       }
 
